@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 
+	"hackaton/pkg/api"
 	"hackaton/pkg/config"
 	"hackaton/pkg/service"
 
@@ -55,6 +56,7 @@ func New(config *config.Config, service *service.Service) (*Server, error) {
 	rootWebservice := new(restful.WebService)
 	server.addVersionEndpoint(rootWebservice, service, config.BasePath)
 	server.addHealthCheck(rootWebservice, service, config.BasePath)
+	server.container.Add(api.AddUserRoute(service, config.BasePath))
 	server.container.Add(rootWebservice)
 
 	return server, nil
