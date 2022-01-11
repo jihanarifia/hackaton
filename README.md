@@ -38,3 +38,29 @@ Refer to the table below for environment variables used in AB-Hack :
   | <DB_PORT> | 5432 | Postgres Port | false |
   | <DB_NAME> | myDB | Postgres Database Name | true |
   | <DB_SSL_ENABLED> | false | Postgres SSL Connection | false |
+
+### API
+#### Check the version information
+`Method: GET`
+
+`Endpoints /api/version`
+#### Check the service health information
+`Method: GET`
+
+`Endpoints /api/healtz`
+#### Create new User
+`Method: POST`
+
+`Endpoints /api/user`
+
+`Body:`
+```
+{
+    "full_name": "<your name>",
+    "message": "<any message you want>"
+}
+```
+#### Get all users
+`Method: GET`
+
+`Endpoints /api/user`
