@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	ServiceName = "ABHack"
-	versionPath = "/version"
+	ServiceName     = "ABHack"
+	versionPath     = "/version"
+	healthCheckPath = "/healthz"
 )
 
 // Server provide state and functionality to run REST API server
@@ -52,7 +53,8 @@ func New(config *config.Config, service *service.Service) (*Server, error) {
 	server.container.Filter(cors.Filter)
 
 	rootWebservice := new(restful.WebService)
-	server.AddVersionEndpoint(rootWebservice, service, config.BasePath)
+	server.addVersionEndpoint(rootWebservice, service, config.BasePath)
+	server.addHealthCheck(rootWebservice, service, config.BasePath)
 	server.container.Add(rootWebservice)
 
 	return server, nil
@@ -74,7 +76,10 @@ func (server *Server) Serve() {
 	}
 }
 
-// AddVersionEndpoint add version endpoint that returns information about the service, name, build date and revision ID
-func (server *Server) AddVersionEndpoint(webService *restful.WebService, service *service.Service, basePath string) {
+func (server *Server) addVersionEndpoint(webService *restful.WebService, service *service.Service, basePath string) {
 	webService.Route(webService.GET(basePath + versionPath).To(service.VersionHandlerShort))
+}
+
+func (server *Server) addHealthCheck(webService *restful.WebService, service *service.Service, basePath string) {
+	webService.Route(webService.GET(basePath + healthCheckPath).To(service.HealthCheckHandler))
 }

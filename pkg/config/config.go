@@ -10,6 +10,14 @@ import (
 type Config struct {
 	Port     string `env:"SERVER_PORT" envDocs:"The port which the service will listen to" envDefault:"8080"`
 	BasePath string `env:"SERVER_BASE_PATH" envDocs:"The base path of this service" envDefault:"/api"`
+
+	// database configurations
+	DBHost       string `env:"DB_HOST,required" envDocs:"Database host server"`
+	DBPort       int    `env:"DB_PORT,required" envDocs:"Database port server" envDefault:"5432"`
+	DBName       string `env:"DB_NAME,required" envDocs:"Database name"`
+	DBUsername   string `env:"DB_USERNAME,required" envDocs:"Database username"`
+	DBPassword   string `env:"DB_PASSWORD,required" envDocs:"Database password"`
+	DBSSLEnabled bool   `env:"DB_SSL_ENABLED" envDocs:"Use SSL for database connection" envDefault:"false"`
 }
 
 // HelpDocs returns documentation of Config based on field tags

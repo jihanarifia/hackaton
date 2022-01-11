@@ -3,12 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"hackaton/pkg/config"
-	"hackaton/pkg/server"
-	"hackaton/pkg/service"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"hackaton/pkg/config"
+	"hackaton/pkg/dao"
+	"hackaton/pkg/dao/postgres"
+	"hackaton/pkg/server"
+	"hackaton/pkg/service"
 
 	"github.com/caarlos0/env"
 	"github.com/pkg/errors"
@@ -37,7 +40,16 @@ func main() {
 		return
 	}
 
-	restfulService := service.New(server.ServiceName, conf)
+	dbConn, err := dao.NewPostgres("postgres", &conf)
+	if err != nil {
+		fmt.Printf("%+v\n", errors.WithStack(err))
+		return
+	}
+	defer dbConn.Close() // nolint : errcheck, used in defer
+
+	db := postgres.NewDB(dbConn)
+
+	restfulService := service.New(server.ServiceName, db, conf)
 
 	restfulServer, err := server.New(&conf, restfulService)
 	if err != nil {
